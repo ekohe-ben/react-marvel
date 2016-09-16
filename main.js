@@ -1,29 +1,32 @@
 /** @jsx React.DOM */
 
 var ComicContainer = React.createClass({
-	loadComics: function(){
+	loadComics: function() {
     var publicKey = "313039c3952a61decd289e888f32325a";
   	var url = "http://gateway.marvel.com/v1/public/comics?apikey=" + publicKey;
-  	$.get(url).then(function(data){
+  	$.get(url).then(function(data) {
 			this.setState({ comics: data.data.results });
 		}.bind(this));
 	},
-	getInitialState: function(){
+	getInitialState: function() {
 		return{ comics: [] };
 	},
-	componentWillMount: function(){
+	componentWillMount: function() {
 		this.loadComics();
 	},
-	render: function(){
-		return(
-			<ComicList comics={this.state.comics} />
+
+	render: function() {
+		return (
+			<div>
+				<ComicList comics={this.state.comics} />
+			</div>
 		)
 	}
 });
 
 var ComicList = React.createClass({
-	render: function(){
-		var comics = this.props.comics.map(function(comic){
+	render: function() {
+		var comics = this.props.comics.map(function(comic) {
 			return <Comic comic={comic} />;
 		});
 		return <div>{comics}</div>
@@ -31,17 +34,74 @@ var ComicList = React.createClass({
 });
 
 var Comic = React.createClass({
-	getImage: function(){
+	getImage: function() {
 		return this.props.comic.thumbnail.path + "." + this.props.comic.thumbnail.extension;
 	},
-	render: function(){
+	render: function() {
 		return (
 			<div>
-        <a href="#">
-          <img src={this.getImage()} />
-        </a>
+				<ModalTrigger
+					trigger={<a><img src={this.getImage()} /></a>}
+					header={<h3>{this.props.comic.title}</h3>}
+					body={
+						<div>
+							<div className="row">
+								<div className="col-md-3 text-center"><img src={this.getImage()} style={{height:"120px", width:"100px"}}/></div>
+								<div className="col-md-9"><p>{this.props.comic.description}</p></div>
+							</div>
+						</div>
+					}
+					footer={<button data-dismiss="modal" className="btn btn-success">OK</button>}
+				/>
 			</div>
 		);
+	}
+});
+
+var ModalTrigger = React.createClass({
+	handleClick: function(e) {
+		$(this.refs.payload.getDOMNode()).modal();
+	},
+	render: function() {
+		return (
+			<div onClick={this.handleClick}>
+				{this.props.trigger}
+				<Modal ref="payload"
+				  header={this.props.header}
+					body={this.props.body}
+					footer={this.props.footer}
+				/>
+			</div>
+	  );
+	}
+});
+
+var Modal = React.createClass({
+	componentDidMount: function() {
+		$(this.getDOMNode()).modal(
+			{ background: true,
+				keyboard: true,
+				show: false
+			})
+	},
+	componentWillUnmount: function() {
+		$(this.getDOMNode()).off('hidden');
+	},
+	handleClick: function(e) {
+		e.stopPropagation();
+	},
+	render: function() {
+		return (
+			<div onClick={this.handleClick} className="modal fade" role="dialog" aria-hidden="true">
+				<div className="modal-dialog">
+					<div className="modal-content">
+						<div className="modal-header">{this.props.header}</div>
+						<div className="modal-body">{this.props.body}</div>
+						<div className="modal-footer">{this.props.footer}</div>
+					</div>
+				</div>
+			</div>
+		)
 	}
 });
 
