@@ -1,0 +1,10 @@
+a > img {
+  height: 200px;
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.modal img {
+  height: 120px;
+  width: 100px;
+}

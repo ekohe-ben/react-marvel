@@ -17,7 +17,7 @@ var ComicContainer = React.createClass({
 
 	render: function() {
 		return (
-			<div>
+			<div className="well">
 				<ComicList comics={this.state.comics} />
 			</div>
 		)
@@ -29,7 +29,7 @@ var ComicList = React.createClass({
 		var comics = this.props.comics.map(function(comic) {
 			return <Comic comic={comic} />;
 		});
-		return <div>{comics}</div>
+		return <div className="row">{comics}</div>
 	}
 });
 
@@ -39,15 +39,15 @@ var Comic = React.createClass({
 	},
 	render: function() {
 		return (
-			<div>
+			<div className="col-sm-2">
 				<ModalTrigger
-					trigger={<a><img src={this.getImage()} /></a>}
+					trigger={<a><img src={this.getImage()}/></a>}
 					header={<h3>{this.props.comic.title}</h3>}
 					body={
 						<div>
 							<div className="row">
-								<div className="col-md-3 text-center"><img src={this.getImage()} style={{height:"120px", width:"100px"}}/></div>
-								<div className="col-md-9"><p>{this.props.comic.description}</p></div>
+								<div className="col-sm-3 text-center"><img src={this.getImage()}/></div>
+								<div className="col-sm-9"><p>{this.props.comic.description}</p></div>
 							</div>
 						</div>
 					}
